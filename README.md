@@ -1,4 +1,4 @@
-# 8weekCodingChallenge
+# 8weeksCodingChallenge
 
 This repository is to write python scripts to solve Danny Ma's 8 week challenges. The challenges could be find at <a href="https://8weeksqlchallenge.com/"> here </a>.
 
