@@ -1,6 +1,6 @@
 # 8weeksCodingChallenge
 
-This repository is to write python scripts to solve Danny Ma's 8 week challenges. The challenges could be find at <a href="https://8weeksqlchallenge.com/"> here </a>.
+This repository is to write python and SQL scripts to solve Danny Ma's 8 week challenges. The challenges could be find at <a href="https://8weeksqlchallenge.com/"> here </a>.
 
 <a href="https://8weeksqlchallenge.com/case-study-1/">Case Study #1 - Danny's Diner</a> 
 
