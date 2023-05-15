@@ -1,0 +1,49 @@
+# 1. Data Cleaning
+---
+````sql
+drop table if exists clean_weekly_sales;
+create temporary table clean_weekly_sales as (
+  select
+      to_timestamp(week_date, 'dd/mm/yy') as week_date,
+      date_part('week', to_timestamp(week_date, 'dd/mm/yy')) as week_number,
+      date_part('month', to_timestamp(week_date, 'dd/mm/yy')) as month_number,
+      date_part('year', to_timestamp(week_date, 'dd/mm/yy')) as calendar_year,
+      region,
+      platform,
+      case
+          when segment = 'null' then null 
+          else segment
+          end as segment,
+      case 
+          when right(segment, 1) = '1' then 'Young Adults'
+          when right(segment, 1) = '2' then 'Middle Aged'
+          when right(segment, 1) in ('3', '4') then 'Retirees'
+          else 'unknown'
+          end as age_band,
+      case 
+          when left(segment, 1) = 'C' then 'Couples'
+          when left(segment, 1) = 'F' then 'Families'
+          else 'unknown'
+          end as demographic,
+      customer_type,
+      transactions,
+      sales,
+      round((sales::numeric/transactions), 2) as avg_transaction
+  from data_mart.weekly_sales);
+
+select * from clean_weekly_sales limit 10;
+````
+### Output:
+| week_date                | week_number | month_number | calendar_year | region | platform | segment | age_band     | demographic | customer_type | transactions | sales    | avg_transaction |
+| ------------------------ | ----------- | ------------ | ------------- | ------ | -------- | ------- | ------------ | ----------- | ------------- | ------------ | -------- | --------------- |
+| 2020-08-31T00:00:00.000Z | 36          | 8            | 2020          | ASIA   | Retail   | C3      | Retirees     | Couples     | New           | 120631       | 3656163  | 30.31           |
+| 2020-08-31T00:00:00.000Z | 36          | 8            | 2020          | ASIA   | Retail   | F1      | Young Adults | Families    | New           | 31574        | 996575   | 31.56           |
+| 2020-08-31T00:00:00.000Z | 36          | 8            | 2020          | USA    | Retail   |         | unknown      | unknown     | Guest         | 529151       | 16509610 | 31.20           |
+| 2020-08-31T00:00:00.000Z | 36          | 8            | 2020          | EUROPE | Retail   | C1      | Young Adults | Couples     | New           | 4517         | 141942   | 31.42           |
+| 2020-08-31T00:00:00.000Z | 36          | 8            | 2020          | AFRICA | Retail   | C2      | Middle Aged  | Couples     | New           | 58046        | 1758388  | 30.29           |
+| 2020-08-31T00:00:00.000Z | 36          | 8            | 2020          | CANADA | Shopify  | F2      | Middle Aged  | Families    | Existing      | 1336         | 243878   | 182.54          |
+| 2020-08-31T00:00:00.000Z | 36          | 8            | 2020          | AFRICA | Shopify  | F3      | Retirees     | Families    | Existing      | 2514         | 519502   | 206.64          |
+| 2020-08-31T00:00:00.000Z | 36          | 8            | 2020          | ASIA   | Shopify  | F1      | Young Adults | Families    | Existing      | 2158         | 371417   | 172.11          |
+| 2020-08-31T00:00:00.000Z | 36          | 8            | 2020          | AFRICA | Shopify  | F2      | Middle Aged  | Families    | New           | 318          | 49557    | 155.84          |
+| 2020-08-31T00:00:00.000Z | 36          | 8            | 2020          | AFRICA | Retail   | C3      | Retirees     | Couples     | New           | 111032       | 3888162  | 35.02           |
+
